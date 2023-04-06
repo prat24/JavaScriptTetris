@@ -7,12 +7,19 @@ let StartingY = 0;
 let Score = 0; 
 let Level = 1; 
 let WinOrLose = "Playing";
+let HighScore = 0;
+localStorage.setItem('highscore', 0);
+if (localStorage.getItem('highscore')) {
+    HighScore = localStorage.getItem('highscore');
+} else {
+    localStorage.setItem('highscore', 0);
+}
 
 let CoordinateArray = [...Array(GameBoardHeight)].map(e => Array(GameBoardWidth).fill(0));
 
 let CurrentTetromino = [[1,0], [0,1], [1,1], [2,1]];
 let Tetrominos = [];
-let TetrominoColors = ['fuchsia','aqua','crimson','goldenrod','deeppink','lawngreen','silver'];
+let TetrominoColors = ['fuchsia','aqua','crimson','yellow','deeppink','lawngreen','silver'];
 let CurrentTetrominoColor;
 let GameBoardArray = [...Array(20)].map(e => Array(12).fill(0));
 let StoppedShapeArray = [...Array(20)].map(e => Array(12).fill(0));
@@ -53,38 +60,42 @@ function SetupGame(){
     Canvas.width = 936;
     Canvas.height = 956;
     Context.scale(2, 2);
- 
+
     Context.fillStyle = 'white';
     Context.fillRect(0, 0, Canvas.width, Canvas.height);
-    Context.strokeStyle = 'black';
+ 
+    Context.strokeStyle = 'gold';
     Context.strokeRect(8, 8, 280, 462);
  
-    TetrisLogo = new Image(161, 54);
-    TetrisLogo.onload = DrawTetrisLogo;
-    TetrisLogo.src = "tetrislogo.png";
- 
-    Context.fillStyle = 'black';
+    tetrisLogo = new Image(160, 54);
+    tetrisLogo.onload = DrawTetrisLogo;
+    tetrisLogo.src = "tetrislogo.png";
+    Context.fillStyle = 'gray';
     Context.font = '21px Arial';
-    Context.fillText("SCORE", 300, 98);
+    Context.fillText("HIGHSCORE", 300, 100);
+    Context.strokeRect(300, 105, 160, 25);
+    Context.fillText(HighScore.toString(), 305, 125);
  
-    Context.strokeRect(300, 107, 161, 24);
-    Context.fillText(Score.toString(), 310, 127);
-    Context.fillText("Level", 300, 157);
-
-    Context.strokeRect(300, 171, 161, 24);
-    Context.fillText(Level.toString(), 310, 190);
-    Context.fillText("WIN / LOSE", 300, 221);
-    Context.fillText(WinOrLose, 310, 261);
-
-    Context.strokeRect(300, 232, 161, 95);
-    Context.fillText("Controls", 300, 354);
-    Context.strokeRect(300, 366, 161, 104);
+    Context.fillText("SCORE", 300, 155);
+    Context.strokeRect(300, 160, 160, 25);
+    Context.fillText(score.toString(), 305, 180);
  
+    Context.fillText("LEVEL", 300, 210);
+    Context.strokeRect(300, 215, 160, 25);
+    Context.fillText(level.toString(), 305, 235);
+ 
+    Context.fillText("WIN / LOSE", 300, 265);
+    Context.strokeRect(300, 270, 160, 25);
+    Context.fillText(winOrLose, 305, 288);
+ 
+    Context.fillText("CONTROLS", 300, 335);
+    Context.strokeRect(300, 341, 160, 129);
     Context.font = '19px Arial';
-    Context.fillText("A : Move Left", 310, 388);
-    Context.fillText("D : Move Right", 310, 413);
-    Context.fillText("S : Move Down", 310, 438);
-    Context.fillText("E : Rotate Right", 310, 463);
+    Context.fillText("A: Move Left", 305, 363);
+    Context.fillText("D: Move Right", 305, 388);
+    Context.fillText("S: Move Down", 305, 413);
+    Context.fillText("W: Rotate Right", 305, 438);
+    Context.fillText("P: Pause", 305, 463);
  
     document.addEventListener('keydown', HandleKeyPress);
 
@@ -162,8 +173,8 @@ function DeleteTetromino(){
 
         let CoordinateofX = CoordinateArray[x][y].x;
         let CoordinateofY = CoordinateArray[x][y].y;
-        ctx.fillStyle = 'white';
-        ctx.fillRect(CoordinateofX, CoordinateofY, 21, 21);
+    Context.fillStyle = 'white';
+    Context.fillRect(CoordinateofX, CoordinateofY, 21, 21);
     }
 }
  
@@ -308,8 +319,8 @@ function CheckForCompletedRows(){
                 GameBoardArray[i][y] = 0;
                 let CoordinateOfX = CoordinateArray[i][y].x;
                 let CoordinateOfY = CoordinateArray[i][y].y;
-                ctx.fillStyle = 'white';
-                ctx.fillRect(CoordinateOfX, CoordinateOfY, 21, 21);
+            Context.fillStyle = 'white';
+            Context.fillRect(CoordinateOfX, CoordinateOfY, 21, 21);
             }
         }
     }
