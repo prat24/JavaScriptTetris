@@ -4,6 +4,7 @@ let GameBoardHeight = 20;
 let GameBoardWidth = 12;
 let StartingX = 4;
 let StartingY = 0; 
+let IsPaused = false;
 let Score = 0; 
 let Level = 1; 
 let WinOrLose = "Playing";
@@ -126,7 +127,7 @@ function DrawTetromino(){
  
 function KeyPress(key){
     if(WinOrLose != "Game Over"){
-    if(key.keyCode === 65){
+    if(key.keyCode === 65 && !IsPaused){
         
         Direction = DirectionStruct.Left;
         if(!WallCollision() && !CheckForHorizontalCollision()){
@@ -134,17 +135,20 @@ function KeyPress(key){
             StartingX--;
             DrawTetromino();
         } 
-    } else if(key.keyCode === 68){
+    } else if(key.keyCode === 68 && !IsPaused){
         Direction = DirectionStruct.Right;
         if(!WallCollision() && !CheckForHorizontalCollision()){
             DeleteTetromino();
             StartingX++;
             DrawTetromino();
         }
-    } else if(key.keyCode === 83){
+    } else if(key.keyCode === 83 && !IsPaused){
         MoveTetrominoDown();
-    } else if(key.keyCode === 69){
+    } else if(key.keyCode === 69 && !IsPaused){
         RotateTetromino();
+    } else if(key.keyCode === 80)
+    {
+        IsPaused = !IsPaused;
     }
     } 
 }
@@ -159,8 +163,11 @@ function MoveTetrominoDown(){
 }
  
 window.setInterval(function(){
+    if(!IsPaused)
+    {
     if(WinOrLose != "Game Over"){
         MoveTetrominoDown();
+        }
     }
   }, 1000);
  
@@ -326,11 +333,18 @@ function CheckForCompletedRows(){
     }
     if(RowsToDelete > 0){
         Score += 10;
+        if (Score > localStorage.getItem('highscore')) {
+            localStorage.setItem('highscore', score);
+            Context.fillStyle = 'white';
+            Context.fillRect(301, 109, 140, 20);
+            Context.fillStyle = 'gray';
+            Context.fillText(score.toString(), 305, 125);
+        }
         Context.fillStyle = 'white';
-        Context.fillRect(310, 109, 140, 19);
-        Context.fillStyle = 'black';
-        Context.fillText(Score.toString(), 310, 127);
-        MoveAllRowsDown(RowsToDelete, StartOfDeletion);
+        Context.fillRect(301, 162, 140, 20);
+        Context.fillStyle = 'gray';
+        Context.fillText(score.toString(), 305, 180);
+        MoveAllRowsDown(rowsToDelete, startOfDeletion);
     }
 }
  
