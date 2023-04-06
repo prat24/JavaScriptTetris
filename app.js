@@ -4,6 +4,9 @@ let GameBoardHeight = 20;
 let GameBoardWidth = 12;
 let StartingX = 4;
 let StartingY = 0; 
+let LevelUp = 10; // Tracks current level
+let Speed = 1; 
+let Timer;  
 let IsPaused = false;
 let Score = 0; 
 let Level = 1; 
@@ -162,14 +165,17 @@ function MoveTetrominoDown(){
     }
 }
  
-window.setInterval(function(){
-    if(!IsPaused)
-    {
-    if(WinOrLose != "Game Over"){
-        MoveTetrominoDown();
+function setSpeed(Speed) {
+    Timer = window.setInterval(() => {
+        if (!IsPaused) {
+            if (WinOrLose != "Game Over") {
+                MoveTetrominoDown();
+            }
         }
-    }
-  }, 1000);
+    }, 1000 / Speed);
+}
+
+setSpeed(speed);
  
 function DeleteTetromino(){
     for(let i = 0; i < CurrentTetromino.length; i++){
@@ -345,6 +351,17 @@ function CheckForCompletedRows(){
         Context.fillStyle = 'gray';
         Context.fillText(score.toString(), 305, 180);
         MoveAllRowsDown(rowsToDelete, startOfDeletion);
+
+        if (Score % LevelUp == 0) {
+            Speed++;
+            Level++;
+            Context.fillStyle = 'white';
+            Context.fillRect(302, 218, 150, 20);
+            Context.fillStyle = 'gray';
+            Context.fillText(Level.toString(), 305, 235);
+            clearInterval(Timer);
+            setSpeed(Speed);
+        }
     }
 }
  
